@@ -10,7 +10,7 @@ outDir = "/home/subhash/Dropbox/master_major_project/python_script/dataset/"
 def getAuthList():
 
 	dblpTwitAuthList = list()
-	fileNameId = codecs.open(inDir + "authIdNameList.txt", 'r', 'UTF-8')
+	fileNameId = codecs.open(inDir + "authIdNameMap.tsv", 'r', 'UTF-8')
 	for line in fileNameId:
 		line = line.replace("\n", "")
 		tokens = line.split("\t")
@@ -20,37 +20,47 @@ def getAuthList():
 	print "dblpTwitAuthList len>>" + str(len(dblpTwitAuthList))
 	return dblpTwitAuthList
 
+def filtConfName(conf):
+	
+	conf = conf.lower()
+	conf = conf.split(" ")
+	conf = conf[0]
+	return conf
+
 def getAuthConfDict(dblpTwitAuthList):
 
 	authConfDict = dict()
 	inproFile = "inproceedings.tsv"
 	fileInproceedings = codecs.open(inDir + inproFile, 'r', encoding='UTF-8')
 
+	print "getAuthConfData dblpTwitAuthList len>>" + str(len(dblpTwitAuthList))
+
 	for line in fileInproceedings:
 		line = line.replace("\n", "")
 		tokens = line.split("\t")
 		
 		# if author data missing continue
-		if len(tokens) < 4:
+		if len(tokens) < 3:
 			continue
 
 
 		# first three tokens are title, conf, year
 		title = tokens[0]
-		conf = tokens[1]
+		conf = filtConfName(tokens[1])
 		year = tokens[2]
 
 		
 		# go thru all the tokens
 		for i in [range(3, len(tokens))][0]:
+
 			authName = tokens[i].lower()
 
 			if authName == "":
 				continue
 
-
 			# check for auth name is in the matched author set
 			if authName in dblpTwitAuthList:
+			
 				# if auth conf list is initialised add the conf to his list
 				if authName in authConfDict:
 					authConfDict[authName].append(conf)
@@ -59,21 +69,17 @@ def getAuthConfDict(dblpTwitAuthList):
 					authConfDict[authName] = list()
 					authConfDict[authName].append(conf)
 
-		print "len(authConfDict)>>" + str(len(authConfDict))
-		return authConfDict
+	print "len(authConfDict)>>" + str(len(authConfDict))
+	return authConfDict
 
 def writeAuthDictToFile(authConfDict, filename):
 
-	fileMapAuthConf = open(filename, "w")
+	fileMapAuthConf = codecs.open(filename, "w", 'UTF-8')
 
 	for auth in authConfDict:
-                
-                print "auth" + auth
-                line = str(auth)
-                print auth
+
+		line = auth
                 confList = authConfDict[auth]
-                print "conf List>>"
-                print confList
                 for conf in confList:
                         line = line +"\t"+ conf 
 
