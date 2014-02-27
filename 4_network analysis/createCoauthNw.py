@@ -84,18 +84,35 @@ def getPass(prevPassSet):
 	print "str(len(neighSet))>>" + str(len(neighSet))
 	return neighSet
 
+def fileWrite(prevPassSet, num):
+	
+	fileW = open(outDir + "coAuthor_"+str(num)+".tsv", "w")
+	for _id in prevPassSet:
+		fileW.write(_id + "\n")
+	
+	fileW.close()		
+
 def main():
 	# do the task in three pass
 
 	# first pass get all the dblp author nodes
 
 	dblpSet = getInitDblpSet()
+	
 	neighSet = getPass(dblpSet)
 	print "str(len(neighSet))>> pass 1" + str(len(neighSet))
+	
 	prevPassSet = dblpSet.union(neighSet)
 	print "total after pass>>" + str(len(prevPassSet))
+	
+	fileWrite(prevPassSet, 1)
+
 	neighSet = getPass(prevPassSet)
 	print "str(len(neighSet))>> pass 2" + str(len(neighSet))
+	
+	prevPassSet = prevPassSet.union(neighSet)
+	fileWrite(prevPassSet, 2)
+
 	
 	# second pass get all the nodes that have coauthored a paper with dblp detected authors
 
