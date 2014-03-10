@@ -49,7 +49,8 @@ class FileInterface:
 
 	def getCommIdDict(self, _type):
 		commIdDict = dict()
-
+		filtCommIdDict = dict()
+		
 		filename = self.datafiles[_type]
 		modIndex = self.modIndex[_type]
 
@@ -66,8 +67,11 @@ class FileInterface:
 			else:
 				commIdDict[comm].add(_id)
 
-		print len(commIdDict)
-		return commIdDict
+		for comm in commIdDict:
+			if len(commIdDict[comm]) > 5:
+				filtCommIdDict[comm] = commIdDict[comm] 
+		print len(filtCommIdDict)
+		return filtCommIdDict
 
 	def getIdFieldDict(self):
 		
@@ -82,9 +86,11 @@ class FileInterface:
 			field  = tokens[1]
 			
 			if name in nameIdDict:
-				idFieldDict[name] = nameIdDict[name]
-
-			
+				_id = nameIdDict[name]
+				#print _id
+				idFieldDict[nameIdDict[name]] = field
+		
+		idNameDict = self.getIdNameDict()	
 		print len(idFieldDict)
 		return idFieldDict
 

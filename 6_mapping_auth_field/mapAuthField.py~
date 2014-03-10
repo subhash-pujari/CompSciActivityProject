@@ -5,7 +5,7 @@ import codecs
 
 '''
 
-inDir = "/home/subhash/Dropbox/master_major_project/dataset/"
+inDir = "/home/subhash/Dropbox/master_major_project/python_script/dataset/"
 
 def getConfFieldDict():
 	
